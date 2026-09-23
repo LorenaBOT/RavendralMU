@@ -18,7 +18,7 @@ DefaultGroupName=MU Ravendral
 DisableProgramGroupPage=yes
 PrivilegesRequired=admin
 OutputDir=output
-OutputBaseFilename=MU-Ravendral-Season6E3-Setup
+OutputBaseFilename=MU-Ravendral-Season6E3-Setup-v2
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
@@ -40,4 +40,4 @@ Name: "{autoprograms}\MU Ravendral"; Filename: "{app}\{#MyAppExeName}"; WorkingD
 Name: "{autodesktop}\MU Ravendral"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "Abrir MU Ravendral"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "Abrir MU Ravendral"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent runascurrentuser
