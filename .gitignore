@@ -1,0 +1,13 @@
+*.log
+*.tmp
+*.bak
+*.bak.*
+*.zip
+*.rar
+*.7z
+main.exe_original
+MuError*
+MuEngTest*
+*Borderless*
+Thumbs.db
+desktop.ini
