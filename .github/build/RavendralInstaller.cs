@@ -207,7 +207,7 @@ namespace RavendralInstaller
             if (inProgramFiles)
             {
                 MessageBox.Show(this,
-                    "MU Ravendral no puede instalarse dentro de Program Files ni Program Files (x86).\n\nUsa, por ejemplo:\nC:\\Games\\MU Ravendral",
+                    "MU Ravendral no puede instalarse dentro de Program Files ni Program Files (x86).\n\nUsa, por ejemplo, la carpeta MU Ravendral del Escritorio.",
                     "Ruta no permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
