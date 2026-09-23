@@ -177,6 +177,34 @@ namespace RavendralInstaller
                 return;
             }
 
+            string fullDestination;
+            try
+            {
+                fullDestination = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
+            catch
+            {
+                MessageBox.Show(this, "La ruta de instalación no es válida.", "MU Ravendral", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string pf86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+            bool inProgramFiles =
+                (!String.IsNullOrEmpty(pf64) && (fullDestination.Equals(pf64, StringComparison.OrdinalIgnoreCase) || fullDestination.StartsWith(pf64 + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))) ||
+                (!String.IsNullOrEmpty(pf86) && (fullDestination.Equals(pf86, StringComparison.OrdinalIgnoreCase) || fullDestination.StartsWith(pf86 + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)));
+
+            if (inProgramFiles)
+            {
+                MessageBox.Show(this,
+                    "MU Ravendral no puede instalarse dentro de Program Files ni Program Files (x86).\n\nUsa, por ejemplo:\nC:\\Games\\MU Ravendral",
+                    "Ruta no permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            destination = fullDestination;
+
             installButton.Enabled = false;
             browseButton.Enabled = false;
             pathBox.Enabled = false;
