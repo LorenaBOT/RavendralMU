@@ -1,0 +1,74 @@
+name: Build Spanish Translation Pack
+on:
+  push:
+    branches:
+      - chatgpt-spanish-pack
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Data/Local/Spn
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+
+      - name: Build translation pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p pack/Data/Local/Eng
+
+          cp "Data/Local/Spn/Text_spn.bmd" "pack/Data/Local/Text.bmd"
+          cp "Data/Local/Spn/item.bmd" "pack/Data/Local/Item.bmd"
+          cp "Data/Local/Spn/skill.bmd" "pack/Data/Local/Skill.bmd"
+          cp "Data/Local/Spn/Dialog_spn.bmd" "pack/Data/Local/NPCDialogue.bmd"
+          cp "Data/Local/Spn/Quest_spn.bmd" "pack/Data/Local/Quest.bmd"
+          cp "Data/Local/Spn/QuestWords_spn.bmd" "pack/Data/Local/QuestWords.bmd"
+
+          cp "Data/Local/Spn/BuffEffect_spn.bmd" "pack/Data/Local/Eng/BuffEffect_eng.bmd"
+          cp "Data/Local/Spn/Dialog_spn.bmd" "pack/Data/Local/Eng/Dialog_eng.bmd"
+          cp "Data/Local/Spn/ItemLevelTooltip_spn.bmd" "pack/Data/Local/Eng/ItemLevelTooltip_eng.bmd"
+          cp "Data/Local/Spn/ItemTooltipText_spn.bmd" "pack/Data/Local/Eng/ItemTooltipText_eng.bmd"
+          cp "Data/Local/Spn/ItemTooltip_spn.bmd" "pack/Data/Local/Eng/ItemTooltip_eng.bmd"
+          cp "Data/Local/Spn/JewelOfHarmonyOption_spn.bmd" "pack/Data/Local/Eng/JewelOfHarmonyOption_eng.bmd"
+          cp "Data/Local/Spn/JewelOfHarmonySmelt_spn.bmd" "pack/Data/Local/Eng/JewelOfHarmonySmelt_eng.bmd"
+          cp "Data/Local/Spn/MasterSkillTooltip_spn.bmd" "pack/Data/Local/Eng/MasterSkillTooltip_eng.bmd"
+          cp "Data/Local/Spn/QuestWords_spn.bmd" "pack/Data/Local/Eng/QuestWords_eng.bmd"
+          cp "Data/Local/Spn/Quest_spn.bmd" "pack/Data/Local/Eng/Quest_eng.bmd"
+          cp "Data/Local/Spn/Text_spn.bmd" "pack/Data/Local/Eng/Text_eng.bmd"
+          cp "Data/Local/Spn/item_spn.bmd" "pack/Data/Local/Eng/item_eng.bmd"
+          cp "Data/Local/Spn/itemsetoption_spn.bmd" "pack/Data/Local/Eng/itemsetoption_eng.bmd"
+          cp "Data/Local/Spn/movereq_spn.bmd" "pack/Data/Local/Eng/movereq_eng.bmd"
+          cp "Data/Local/Spn/skill_spn.bmd" "pack/Data/Local/Eng/skill_eng.bmd"
+          cp "Data/Local/Spn/slide_spn.bmd" "pack/Data/Local/Eng/slide_eng.bmd"
+          cp "Data/Local/Spn/socketitem_spn.bmd" "pack/Data/Local/Eng/socketitem_eng.bmd"
+          cp "Data/Local/Spn/Npcname(spn).txt" "pack/Data/Local/Eng/Npcname(eng).txt"
+
+          cat > pack/LEEME.txt <<'EOF'
+MU Ravendral - Paquete de traduccion al espanol
+
+Este paquete contiene archivos BMD espanoles tomados del propio cliente
+RavendralMU y renombrados a los nombres que el cliente ingles carga.
+
+1. Haz una copia de seguridad de tu carpeta Data\Local.
+2. Copia la carpeta Data de este paquete sobre la raiz del cliente.
+3. Acepta reemplazar los archivos.
+4. Inicia el juego y prueba NPC, quests, items, skills y tooltips.
+
+No incluye main.exe, DLLs ni codigo del cliente.
+EOF
+
+      - name: Create ZIP
+        shell: bash
+        run: |
+          cd pack
+          zip -r ../MU-Ravendral-Traduccion-ES-BMD.zip .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MU-Ravendral-Traduccion-ES-BMD
+          path: MU-Ravendral-Traduccion-ES-BMD.zip
+          if-no-files-found: error
