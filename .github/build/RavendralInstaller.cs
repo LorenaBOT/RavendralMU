@@ -80,7 +80,7 @@ namespace RavendralInstaller
             Controls.Add(intro);
 
             Label pathLabel = new Label();
-            pathLabel.Text = "Carpeta de instalación";
+            pathLabel.Text = "Ubicación de instalación (se creará la carpeta MU Ravendral)";
             pathLabel.ForeColor = Color.WhiteSmoke;
             pathLabel.AutoSize = true;
             pathLabel.Location = new Point(42, 226);
@@ -157,6 +157,15 @@ namespace RavendralInstaller
             return b;
         }
 
+        static string EnsureAppFolder(string selectedPath)
+        {
+            string full = Path.GetFullPath(selectedPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string leaf = Path.GetFileName(full);
+            if (!String.Equals(leaf, "MU Ravendral", StringComparison.OrdinalIgnoreCase))
+                full = Path.Combine(full, "MU Ravendral");
+            return full;
+        }
+
         void BrowseClicked(object sender, EventArgs e)
         {
             using (FolderBrowserDialog f = new FolderBrowserDialog())
@@ -164,7 +173,7 @@ namespace RavendralInstaller
                 f.Description = "Selecciona la carpeta de instalación de MU Ravendral";
                 f.SelectedPath = pathBox.Text;
                 if (f.ShowDialog(this) == DialogResult.OK)
-                    pathBox.Text = f.SelectedPath;
+                    pathBox.Text = EnsureAppFolder(f.SelectedPath);
             }
         }
 
@@ -180,7 +189,7 @@ namespace RavendralInstaller
             string fullDestination;
             try
             {
-                fullDestination = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                fullDestination = EnsureAppFolder(destination);
             }
             catch
             {
