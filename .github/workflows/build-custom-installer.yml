@@ -34,4 +34,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "custom-client-installer-v1" "dist/MU-Ravendral-Season6E3-Installer.zip#MU Ravendral Custom Installer ZIP" --title "MU Ravendral - Custom Installer" --notes "Instalador propio de MU Ravendral. No utiliza frameworks comerciales de instalación." --target "${{ github.sha }}"
+          gh release create "custom-client-installer-v2" "dist/MU-Ravendral-Season6E3-Installer.zip#MU Ravendral Custom Installer ZIP" --title "MU Ravendral - Custom Installer v2" --notes "Instalador propio de MU Ravendral v2. Instala en C:\\Games\\MU Ravendral para evitar problemas de permisos de clientes legacy." --target "${{ github.sha }}"
