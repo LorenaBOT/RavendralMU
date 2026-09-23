@@ -35,4 +35,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "custom-client-installer-v5" "dist/MU-Ravendral-Season6E3-Installer.zip#MU Ravendral Custom Installer ZIP" --title "MU Ravendral - Custom Installer v5" --notes "Instalador propio de MU Ravendral v5. Trata los recursos MU como binarios para evitar corrupción CRLF, bloquea Program Files y verifica checksums antes de empaquetar." --target "${{ github.sha }}"
+          gh release create "custom-client-installer-v6" "dist/MU-Ravendral-Season6E3-Installer.zip#MU Ravendral Custom Installer ZIP" --title "MU Ravendral - Custom Installer v6" --notes "Instalador propio de MU Ravendral v6. Siempre crea la subcarpeta MU Ravendral en la ubicación elegida, bloquea Program Files y mantiene verificación de integridad." --target "${{ github.sha }}"
