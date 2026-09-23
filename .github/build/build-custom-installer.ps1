@@ -34,12 +34,12 @@ function Repair-MuChecksumFile([string]$Path, [UInt16]$Key) {
         if (((($checked / 4) + $Key) % 2) -eq 0) {
             $result = [UInt32](($result -bxor $temp) -band 0xFFFFFFFF)
         } else {
-            $result = [UInt32](($result + $temp) -band 0xFFFFFFFF)
+            $result = [UInt32](([UInt64]$result + [UInt64]$temp) % 4294967296)
         }
 
         if (($checked % 16) -eq 0) {
             $shift = (($checked / 4) % 8) + 1
-            $mix = [UInt32](($dwKey + $result) -band 0xFFFFFFFF)
+            $mix = [UInt32](([UInt64]$dwKey + [UInt64]$result) % 4294967296)
             $result = [UInt32](($result -bxor ($mix -shr $shift)) -band 0xFFFFFFFF)
         }
     }
