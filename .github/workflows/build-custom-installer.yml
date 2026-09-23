@@ -1,0 +1,37 @@
+name: Build Custom MU Ravendral Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/build/**"
+      - ".github/workflows/build-custom-installer.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout public client
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
+
+      - name: Restore Git LFS files
+        shell: pwsh
+        run: git lfs pull
+
+      - name: Build and verify custom Ravendral installer
+        shell: pwsh
+        run: .\.github\build\build-custom-installer.ps1
+
+      - name: Publish ZIP
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "custom-client-installer-v1" "dist/MU-Ravendral-Season6E3-Installer.zip#MU Ravendral Custom Installer ZIP" --title "MU Ravendral - Custom Installer" --notes "Instalador propio de MU Ravendral. No utiliza frameworks comerciales de instalación." --target "${{ github.sha }}"
