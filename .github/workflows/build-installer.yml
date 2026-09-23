@@ -9,7 +9,7 @@ on:
       - ".github/workflows/build-installer.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -32,10 +32,17 @@ jobs:
         shell: pwsh
         run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer\MU-Ravendral.iss"'
 
-      - name: Upload installer
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: MU-Ravendral-Season6E3-Setup
           path: installer/output/MU-Ravendral-Season6E3-Setup.exe
           if-no-files-found: error
           compression-level: 0
+
+      - name: Publish installer release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "season6e3-client-v1" "installer/output/MU-Ravendral-Season6E3-Setup.exe#MU Ravendral Season 6 Episode 3 Installer" --title "MU Ravendral Season 6 Episode 3" --notes "Instalador público de MU Ravendral Season 6 Episode 3." --target "${{ github.sha }}"
