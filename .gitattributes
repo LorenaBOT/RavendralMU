@@ -1,1 +1,15 @@
 *.exe filter=lfs diff=lfs merge=lfs -text
+*.bmd binary
+*.bmp binary
+*.ozj binary
+*.ozt binary
+*.ozb binary
+*.ozd binary
+*.map binary
+*.att binary
+*.obj binary
+*.wav binary
+*.ogg binary
+*.dll binary
+*.wtf binary
+*.des binary
