@@ -35,8 +35,8 @@ jobs:
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MU-Ravendral-Season6E3-Setup
-          path: installer/output/MU-Ravendral-Season6E3-Setup.exe
+          name: MU-Ravendral-Season6E3-Setup-v2
+          path: installer/output/MU-Ravendral-Season6E3-Setup-v2.exe
           if-no-files-found: error
           compression-level: 0
 
@@ -45,4 +45,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "season6e3-client-v1" "installer/output/MU-Ravendral-Season6E3-Setup.exe#MU Ravendral Season 6 Episode 3 Installer" --title "MU Ravendral Season 6 Episode 3" --notes "Instalador público de MU Ravendral Season 6 Episode 3." --target "${{ github.sha }}"
+          gh release create "season6e3-client-v2" "installer/output/MU-Ravendral-Season6E3-Setup-v2.exe#MU Ravendral Season 6 Episode 3 Installer v2" --title "MU Ravendral Season 6 Episode 3 v2" --notes "Corrige el lanzamiento del cliente al finalizar la instalación cuando requiere elevación." --target "${{ github.sha }}"
