@@ -1,0 +1,41 @@
+name: Build MU Ravendral Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "installer/**"
+      - ".github/workflows/build-installer.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout client
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Pull Git LFS files
+        shell: pwsh
+        run: git lfs pull
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Compile installer
+        shell: pwsh
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer\MU-Ravendral.iss"'
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: MU-Ravendral-Season6E3-Setup
+          path: installer/output/MU-Ravendral-Season6E3-Setup.exe
+          if-no-files-found: error
+          compression-level: 0
