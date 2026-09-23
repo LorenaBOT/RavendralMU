@@ -19,6 +19,50 @@ Get-ChildItem -LiteralPath $repo -Force | Where-Object {
     Copy-Item -LiteralPath $_.FullName -Destination $stage -Recurse -Force
 }
 
+
+# Repair MU checksum-protected filter files before packaging.
+function Repair-MuChecksumFile([string]$Path, [UInt16]$Key) {
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    if ($bytes.Length -lt 8) { throw "Invalid MU data file: $Path" }
+
+    $dataLength = $bytes.Length - 4
+    $dwKey = [UInt32]$Key
+    $result = [UInt32](($dwKey -shl 9) -band 0xFFFFFFFF)
+
+    for ($checked = 0; $checked -le ($dataLength - 4); $checked += 4) {
+        $temp = [BitConverter]::ToUInt32($bytes, $checked)
+        if (((($checked / 4) + $Key) % 2) -eq 0) {
+            $result = [UInt32](($result -bxor $temp) -band 0xFFFFFFFF)
+        } else {
+            $result = [UInt32](($result + $temp) -band 0xFFFFFFFF)
+        }
+
+        if (($checked % 16) -eq 0) {
+            $shift = (($checked / 4) % 8) + 1
+            $mix = [UInt32](($dwKey + $result) -band 0xFFFFFFFF)
+            $result = [UInt32](($result -bxor ($mix -shr $shift)) -band 0xFFFFFFFF)
+        }
+    }
+
+    $check = [BitConverter]::GetBytes([UInt32]$result)
+    [Array]::Copy($check, 0, $bytes, $dataLength, 4)
+    [IO.File]::WriteAllBytes($Path, $bytes)
+
+    $verify = [BitConverter]::ToUInt32([IO.File]::ReadAllBytes($Path), $dataLength)
+    if ($verify -ne $result) { throw "Checksum repair verification failed: $Path" }
+}
+
+$filter = Join-Path $stage "Data\Local\Filter.bmd"
+$filterName = Join-Path $stage "Data\Local\FilterName.bmd"
+if (!(Test-Path $filter)) { throw "Missing Data\Local\Filter.bmd" }
+if (!(Test-Path $filterName)) { throw "Missing Data\Local\FilterName.bmd" }
+if ((Get-Item $filter).Length -ne 20004) { throw "Unexpected Filter.bmd size: $((Get-Item $filter).Length)" }
+if ((Get-Item $filterName).Length -ne 10004) { throw "Unexpected FilterName.bmd size: $((Get-Item $filterName).Length)" }
+
+Repair-MuChecksumFile $filter 0x3E7D
+Repair-MuChecksumFile $filterName 0x2BC1
+Write-Host "MU filter checksums repaired and verified."
+
 # Ensure Git LFS pointers were replaced by real executables.
 $required = @("MU Client Ravendral.exe", "main.exe", "Mu.exe")
 foreach ($name in $required) {
